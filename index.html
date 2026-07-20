@@ -668,11 +668,7 @@ $("deviceLinkBtn").addEventListener("click", async () => {
 // ---------- Boot ----------
 consumeDeviceLinkToken();
 renderTabs();
-if (sessionStorage.getItem("list_logged_in") === "1") {
-  afterLogin();
-} else {
-  showScreen("loginScreen");
-}
+afterLogin();
 </script>
 </body>
 </html>
