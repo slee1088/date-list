@@ -64,7 +64,7 @@
     color: var(--ink-soft);
     margin: 14px 0 5px;
   }
-  input[type="email"], input[type="password"], input[type="text"] {
+  input[type="text"], input[type="password"] {
     width: 100%;
     padding: 10px 11px;
     border: 1px solid var(--line);
@@ -276,12 +276,12 @@
     <div class="eyebrow">Just the two of us</div>
     <h1>Sign in</h1>
     <form id="loginForm">
-      <label for="email">Email</label>
-      <input type="email" id="email" required autocomplete="username">
+      <label for="username">Username</label>
+      <input type="text" id="username" required autocomplete="username">
       <label for="password">Password</label>
       <input type="password" id="password" required autocomplete="current-password">
       <button type="submit" class="btn-primary">Sign in</button>
-      <div class="error" id="loginError">Incorrect email or password.</div>
+      <div class="error" id="loginError">Incorrect username or password.</div>
     </form>
     <div class="hint">A soft lock for the two of you &mdash; not bank-grade security.</div>
   </div>
@@ -344,7 +344,7 @@ const CONFIG = {
   repo: "YOUR_REPO_NAME",
   path: "data.json",
   branch: "main",
-  // SHA-256 hex hash of "email:password" — generate via the snippet in README.md
+  // SHA-256 hex hash of "username:password" — generate via the snippet in README.md
   credentialHash: "PASTE_YOUR_HASH_HERE"
 };
 /* ================================= */
@@ -378,9 +378,9 @@ function showScreen(id) {
 // ---------- Login ----------
 $("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const email = $("email").value.trim().toLowerCase();
+  const username = $("username").value.trim().toLowerCase();
   const pw = $("password").value;
-  const hash = await sha256Hex(`${email}:${pw}`);
+  const hash = await sha256Hex(`${username}:${pw}`);
   if (hash === CONFIG.credentialHash) {
     sessionStorage.setItem("list_logged_in", "1");
     $("loginError").style.display = "none";
