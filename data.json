@@ -6,6 +6,12 @@
       "done": false
     }
   ],
-  "activities": [],
+  "activities": [
+    {
+      "text": "bondi-coogee walk",
+      "notes": "",
+      "done": false
+    }
+  ],
   "places": []
 }
