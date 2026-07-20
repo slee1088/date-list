@@ -3,9 +3,30 @@
     {
       "text": "bar totti",
       "notes": "",
-      "done": true
+      "done": false
+    },
+    {
+      "text": "bar totti",
+      "notes": "",
+      "done": false
     }
   ],
-  "activities": [],
+  "activities": [
+    {
+      "text": "ice skating",
+      "notes": "",
+      "done": false
+    },
+    {
+      "text": "blue mountains",
+      "notes": "",
+      "done": false
+    },
+    {
+      "text": "bondi coogee",
+      "notes": "",
+      "done": false
+    }
+  ],
   "places": []
 }
