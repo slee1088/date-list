@@ -1,5 +1,11 @@
 {
-  "eat": [],
+  "eat": [
+    {
+      "text": "bar totti",
+      "notes": "",
+      "done": false
+    }
+  ],
   "activities": [],
   "places": []
 }
