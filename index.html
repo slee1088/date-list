@@ -541,13 +541,32 @@ $("addForm").addEventListener("submit", (e) => {
   scheduleSave();
 });
 
+let saveInFlight = false;
+let saveQueued = false;
+
 function scheduleSave() {
   showStamp("saving", "Saving…");
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(saveData, 700);
+  saveTimer = setTimeout(runSave, 700);
 }
 
-async function saveData(retried) {
+async function runSave() {
+  if (saveInFlight) {
+    // a save is already in progress — mark that we need another pass once it's done
+    saveQueued = true;
+    return;
+  }
+  saveInFlight = true;
+  await saveData(0);
+  saveInFlight = false;
+  if (saveQueued) {
+    saveQueued = false;
+    showStamp("saving", "Saving…");
+    await runSave();
+  }
+}
+
+async function saveData(attempt) {
   const pat = localStorage.getItem("list_gh_pat");
   const body = {
     message: `Update list — ${new Date().toISOString()}`,
@@ -569,9 +588,12 @@ async function saveData(retried) {
         body: JSON.stringify(body)
       }
     );
-    if (res.status === 409 && !retried) {
-      await refreshSha();
-      return saveData(true);
+    if (res.status === 409 && attempt < 4) {
+      // someone else (partner's device, or another tab) saved in between —
+      // pull their latest version, keep only OUR active tab's edits on top of it,
+      // so we don't clobber their changes to the other tabs, then retry.
+      await mergeInLatestRemote();
+      return saveData(attempt + 1);
     }
     if (!res.ok) throw new Error("save failed: " + res.status);
     const json = await res.json();
@@ -583,15 +605,30 @@ async function saveData(retried) {
   }
 }
 
-async function refreshSha() {
+async function mergeInLatestRemote() {
   const pat = localStorage.getItem("list_gh_pat");
   const res = await fetch(
     `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}?ref=${CONFIG.branch}`,
     { headers: { Authorization: `Bearer ${pat}`, Accept: "application/vnd.github+json" } }
   );
-  if (res.ok) {
-    const json = await res.json();
-    currentSha = json.sha;
+  if (!res.ok) return;
+  const json = await res.json();
+  currentSha = json.sha;
+  try {
+    const content = b64DecodeUnicode(json.content.replace(/\n/g, ""));
+    const remote = JSON.parse(content || "{}");
+    // keep the tab the person is actively editing as-is; adopt the remote
+    // version for every other tab so we don't overwrite a partner's edits there
+    const merged = {
+      eat: remote.eat || [],
+      activities: remote.activities || [],
+      places: remote.places || []
+    };
+    merged[activeTab] = data[activeTab];
+    data = merged;
+    renderList();
+  } catch (err) {
+    console.error(err);
   }
 }
 
