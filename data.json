@@ -26,6 +26,11 @@
       "text": "ice skating",
       "notes": "if it rains",
       "done": false
+    },
+    {
+      "text": "watch odyssey",
+      "notes": "",
+      "done": false
     }
   ],
   "places": [
