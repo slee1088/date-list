@@ -423,12 +423,6 @@ async function testToken(pat) {
   } catch { return false; }
 }
 
-// ---------- Logout ----------
-$("logoutBtn").addEventListener("click", () => {
-  sessionStorage.removeItem("list_logged_in");
-  showScreen("loginScreen");
-});
-
 // ---------- Tabs ----------
 let activeTab = "eat";
 document.querySelectorAll(".tab").forEach(btn => {
