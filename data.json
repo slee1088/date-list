@@ -13,5 +13,11 @@
       "done": false
     }
   ],
-  "places": []
+  "places": [
+    {
+      "text": "blue mountains",
+      "notes": "",
+      "done": false
+    }
+  ]
 }
