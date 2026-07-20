@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our List</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='16' fill='%23C4685A'/%3E%3Cpath d='M50 78 C20 55 10 38 24 24 C34 14 48 18 50 32 C52 18 66 14 76 24 C90 38 80 55 50 78 Z' fill='%23FFFDFB'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --paper: #FBF3EE;
+    --paper-raised: #FFFDFB;
+    --ink: #3A2A28;
+    --ink-soft: #8A736D;
+    --rose: #C4685A;
+    --rose-dark: #9C4C40;
+    --sage: #7E9A78;
+    --clay: #B5453B;
+    --line: #EAD9D2;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Iowan Old Style, Palatino Linotype, Georgia, serif;
+    min-height: 100vh;
+  }
+  .mono {
+    font-family: "SF Mono", Menlo, Consolas, "Courier New", monospace;
+  }
+  .screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-top: 6px solid var(--rose);
+    border-radius: 8px;
+    padding: 36px 32px;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  h1 {
+    font-size: 1.5rem;
+    margin: 0 0 4px 0;
+    letter-spacing: 0.01em;
+  }
+  .eyebrow {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--rose-dark);
+    margin-bottom: 18px;
+  }
+  label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    margin: 14px 0 5px;
+  }
+  input[type="email"], input[type="password"], input[type="text"] {
+    width: 100%;
+    padding: 10px 11px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--ink);
+  }
+  input:focus {
+    outline: none;
+    border-color: var(--rose);
+    box-shadow: 0 0 0 3px rgba(196,104,90,0.15);
+  }
+  button {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+  }
+  .btn-primary {
+    background: var(--rose);
+    color: #fff;
+    width: 100%;
+    margin-top: 22px;
+    padding: 12px;
+  }
+  .btn-primary:hover { background: var(--rose-dark); }
+  .btn-primary:disabled { opacity: 0.5; cursor: default; }
+  .error {
+    color: var(--clay);
+    font-size: 0.82rem;
+    margin-top: 12px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    display: none;
+  }
+  .hint {
+    font-size: 0.76rem;
+    color: var(--ink-soft);
+    margin-top: 18px;
+    line-height: 1.5;
+  }
+
+  /* ---- Main screen ---- */
+  .wrap { max-width: 640px; margin: 0 auto; padding: 28px 18px 100px; }
+  header.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 12px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  header.top h1 { margin: 0; }
+  .logout {
+    background: none;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    font-size: 0.72rem;
+  }
+  .logout:hover { border-color: var(--ink-soft); color: var(--ink); }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .tab {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 10px 6px 12px;
+    font-family: Iowan Old Style, Palatino Linotype, Georgia, serif;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    flex: 1;
+    text-align: center;
+    letter-spacing: 0.01em;
+  }
+  .tab.active {
+    color: var(--rose-dark);
+    border-bottom-color: var(--rose);
+    font-weight: 700;
+  }
+
+  /* Checklist */
+  ul.list { list-style: none; margin: 0; padding: 0; }
+  .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 2px;
+    border-bottom: 1px solid var(--line);
+  }
+  .item input[type="checkbox"] {
+    margin-top: 9px;
+    width: 19px;
+    height: 19px;
+    accent-color: var(--rose);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .item-fields { flex: 1; min-width: 0; }
+  .item-fields input {
+    width: 100%;
+    border: 1px solid transparent;
+    background: transparent;
+    padding: 6px 4px;
+    font-family: inherit;
+    color: var(--ink);
+    border-radius: 4px;
+  }
+  .item-fields input:focus {
+    outline: none;
+    border-color: var(--rose);
+    background: #fff;
+  }
+  .item-fields .title-input {
+    font-size: 1rem;
+  }
+  .item.done .title-input {
+    text-decoration: line-through;
+    color: var(--ink-soft);
+  }
+  .item-fields .notes-input {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    margin-top: 1px;
+  }
+  .del-btn {
+    background: none;
+    color: var(--ink-soft);
+    padding: 8px 6px;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  .del-btn:hover { color: var(--clay); }
+
+  .add-row-form {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .add-row-form input {
+    flex: 1;
+    padding: 11px 12px;
+    border: 1px dashed var(--line);
+    border-radius: 6px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.92rem;
+    color: var(--ink);
+  }
+  .add-row-form input:focus {
+    outline: none;
+    border-color: var(--rose);
+    border-style: solid;
+    background: #fff;
+  }
+  .add-row-form button {
+    background: var(--rose);
+    color: #fff;
+    padding: 0 18px;
+  }
+  .add-row-form button:hover { background: var(--rose-dark); }
+
+  .statusbar {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.72rem;
+  }
+  .stamp {
+    display: inline-block;
+    padding: 6px 12px;
+    border: 2px solid var(--rose);
+    color: var(--rose-dark);
+    border-radius: 4px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.9);
+    transition: opacity 0.4s ease;
+  }
+  .stamp.saving { border-color: var(--ink-soft); color: var(--ink-soft); }
+  .stamp.error { border-color: var(--clay); color: var(--clay); }
+  .stamp.hidden { opacity: 0; }
+
+  .loading, .empty {
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    padding: 30px 4px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="screen" id="loginScreen">
+  <div class="card">
+    <div class="eyebrow">Just the two of us</div>
+    <h1>Sign in</h1>
+    <form id="loginForm">
+      <label for="email">Email</label>
+      <input type="email" id="email" required autocomplete="username">
+      <label for="password">Password</label>
+      <input type="password" id="password" required autocomplete="current-password">
+      <button type="submit" class="btn-primary">Sign in</button>
+      <div class="error" id="loginError">Incorrect email or password.</div>
+    </form>
+    <div class="hint">A soft lock for the two of you &mdash; not bank-grade security.</div>
+  </div>
+</div>
+
+<!-- TOKEN SCREEN -->
+<div class="screen" id="tokenScreen" style="display:none;">
+  <div class="card">
+    <div class="eyebrow">One-time setup</div>
+    <h1>Connect storage</h1>
+    <form id="tokenForm">
+      <label for="pat">GitHub token</label>
+      <input type="text" id="pat" class="mono" placeholder="github_pat_..." required>
+      <button type="submit" class="btn-primary">Connect</button>
+      <div class="error" id="tokenError">Couldn't reach the repo with that token.</div>
+    </form>
+    <div class="hint">
+      Paste a fine-grained token scoped only to this repo (Contents: Read and write).
+      It's saved in this browser's local storage only &mdash; never in the site's source.
+      See the README for how to create one, and how to share access across your devices.
+    </div>
+  </div>
+</div>
+
+<!-- MAIN SCREEN -->
+<div class="wrap" id="mainScreen" style="display:none;">
+  <header class="top">
+    <h1>Our List</h1>
+    <div style="display:flex; gap:8px;">
+      <button class="logout" id="deviceLinkBtn">Copy device link</button>
+      <button class="logout" id="logoutBtn">Sign out</button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab" data-tab="eat">Eat</button>
+    <button class="tab" data-tab="activities">Activities</button>
+    <button class="tab" data-tab="places">Go</button>
+  </div>
+
+  <div id="loadingMsg" class="loading">Loading…</div>
+  <div id="listArea" style="display:none;">
+    <ul class="list" id="list"></ul>
+    <div class="empty" id="emptyMsg" style="display:none;">Nothing here yet.</div>
+    <form class="add-row-form" id="addForm">
+      <input type="text" id="addInput" placeholder="Add something…" required>
+      <button type="submit">Add</button>
+    </form>
+  </div>
+</div>
+
+<div class="statusbar"><span class="stamp hidden" id="stamp">Saved</span></div>
+
+<script>
+/* ============ CONFIG ============
+   Fill these in before publishing. See README.md.
+*/
+const CONFIG = {
+  owner: "YOUR_GITHUB_USERNAME",
+  repo: "YOUR_REPO_NAME",
+  path: "data.json",
+  branch: "main",
+  // SHA-256 hex hash of "email:password" — generate via the snippet in README.md
+  credentialHash: "PASTE_YOUR_HASH_HERE"
+};
+/* ================================= */
+
+const TABS = [
+  { key: "eat", label: "Eat", placeholder: "Add a restaurant…" },
+  { key: "activities", label: "Activities", placeholder: "Add an activity…" },
+  { key: "places", label: "Go", placeholder: "Add a place…" }
+];
+
+const $ = (id) => document.getElementById(id);
+
+async function sha256Hex(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function b64EncodeUnicode(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+function b64DecodeUnicode(str) {
+  return decodeURIComponent(escape(atob(str)));
+}
+
+function showScreen(id) {
+  ["loginScreen", "tokenScreen", "mainScreen"].forEach(s => {
+    $(s).style.display = (s === id) ? (s === "mainScreen" ? "block" : "flex") : "none";
+  });
+}
+
+// ---------- Login ----------
+$("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = $("email").value.trim().toLowerCase();
+  const pw = $("password").value;
+  const hash = await sha256Hex(`${email}:${pw}`);
+  if (hash === CONFIG.credentialHash) {
+    sessionStorage.setItem("list_logged_in", "1");
+    $("loginError").style.display = "none";
+    afterLogin();
+  } else {
+    $("loginError").style.display = "block";
+  }
+});
+
+function afterLogin() {
+  const pat = localStorage.getItem("list_gh_pat");
+  if (pat) {
+    showScreen("mainScreen");
+    loadData();
+  } else {
+    showScreen("tokenScreen");
+  }
+}
+
+// ---------- Token connect ----------
+$("tokenForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const pat = $("pat").value.trim();
+  const ok = await testToken(pat);
+  if (ok) {
+    localStorage.setItem("list_gh_pat", pat);
+    $("tokenError").style.display = "none";
+    showScreen("mainScreen");
+    loadData();
+  } else {
+    $("tokenError").style.display = "block";
+  }
+});
+
+async function testToken(pat) {
+  try {
+    const res = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}`, {
+      headers: { Authorization: `Bearer ${pat}`, Accept: "application/vnd.github+json" }
+    });
+    return res.ok;
+  } catch { return false; }
+}
+
+// ---------- Logout ----------
+$("logoutBtn").addEventListener("click", () => {
+  sessionStorage.removeItem("list_logged_in");
+  showScreen("loginScreen");
+});
+
+// ---------- Tabs ----------
+let activeTab = "eat";
+document.querySelectorAll(".tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    activeTab = btn.dataset.tab;
+    renderTabs();
+    renderList();
+  });
+});
+function renderTabs() {
+  document.querySelectorAll(".tab").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.tab === activeTab);
+  });
+  const meta = TABS.find(t => t.key === activeTab);
+  $("addInput").placeholder = meta.placeholder;
+}
+
+// ---------- Data load/save ----------
+let data = { eat: [], activities: [], places: [] };
+let currentSha = null;
+let saveTimer = null;
+
+async function loadData() {
+  $("loadingMsg").style.display = "block";
+  $("listArea").style.display = "none";
+  const pat = localStorage.getItem("list_gh_pat");
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}?ref=${CONFIG.branch}`,
+      { headers: { Authorization: `Bearer ${pat}`, Accept: "application/vnd.github+json" } }
+    );
+    if (!res.ok) throw new Error("fetch failed: " + res.status);
+    const json = await res.json();
+    currentSha = json.sha;
+    const content = b64DecodeUnicode(json.content.replace(/\n/g, ""));
+    const parsed = JSON.parse(content || "{}");
+    data = {
+      eat: parsed.eat || [],
+      activities: parsed.activities || [],
+      places: parsed.places || []
+    };
+  } catch (err) {
+    console.error(err);
+    currentSha = null;
+  }
+  renderTabs();
+  renderList();
+  $("loadingMsg").style.display = "none";
+  $("listArea").style.display = "block";
+}
+
+function renderList() {
+  const list = $("list");
+  const items = data[activeTab];
+  list.innerHTML = "";
+  $("emptyMsg").style.display = items.length ? "none" : "block";
+
+  items.forEach((it, i) => {
+    const li = document.createElement("li");
+    li.className = "item" + (it.done ? " done" : "");
+    li.innerHTML = `
+      <input type="checkbox" data-i="${i}" ${it.done ? "checked" : ""}>
+      <div class="item-fields">
+        <input class="title-input" data-i="${i}" data-field="text" value="${escapeAttr(it.text || "")}">
+        <input class="notes-input" data-i="${i}" data-field="notes" value="${escapeAttr(it.notes || "")}" placeholder="notes (optional)">
+      </div>
+      <button class="del-btn" data-i="${i}">✕</button>
+    `;
+    list.appendChild(li);
+  });
+
+  list.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener("change", (e) => {
+      const i = +e.target.dataset.i;
+      data[activeTab][i].done = e.target.checked;
+      renderList();
+      scheduleSave();
+    });
+  });
+  list.querySelectorAll('.item-fields input').forEach(inp => {
+    inp.addEventListener("input", (e) => {
+      const i = +e.target.dataset.i;
+      const field = e.target.dataset.field;
+      data[activeTab][i][field] = e.target.value;
+      scheduleSave();
+    });
+  });
+  list.querySelectorAll(".del-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      const i = +e.target.dataset.i;
+      data[activeTab].splice(i, 1);
+      renderList();
+      scheduleSave();
+    });
+  });
+}
+
+function escapeAttr(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+}
+
+$("addForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const val = $("addInput").value.trim();
+  if (!val) return;
+  data[activeTab].push({ text: val, notes: "", done: false });
+  $("addInput").value = "";
+  renderList();
+  scheduleSave();
+});
+
+function scheduleSave() {
+  showStamp("saving", "Saving…");
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveData, 700);
+}
+
+async function saveData(retried) {
+  const pat = localStorage.getItem("list_gh_pat");
+  const body = {
+    message: `Update list — ${new Date().toISOString()}`,
+    content: b64EncodeUnicode(JSON.stringify(data, null, 2)),
+    branch: CONFIG.branch
+  };
+  if (currentSha) body.sha = currentSha;
+
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${pat}`,
+          Accept: "application/vnd.github+json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      }
+    );
+    if (res.status === 409 && !retried) {
+      await refreshSha();
+      return saveData(true);
+    }
+    if (!res.ok) throw new Error("save failed: " + res.status);
+    const json = await res.json();
+    currentSha = json.content.sha;
+    showStamp("saved", "Saved");
+  } catch (err) {
+    console.error(err);
+    showStamp("error", "Save failed");
+  }
+}
+
+async function refreshSha() {
+  const pat = localStorage.getItem("list_gh_pat");
+  const res = await fetch(
+    `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}?ref=${CONFIG.branch}`,
+    { headers: { Authorization: `Bearer ${pat}`, Accept: "application/vnd.github+json" } }
+  );
+  if (res.ok) {
+    const json = await res.json();
+    currentSha = json.sha;
+  }
+}
+
+let stampTimer = null;
+function showStamp(kind, text) {
+  const el = $("stamp");
+  el.textContent = text;
+  el.className = `stamp ${kind === "saving" ? "saving" : kind === "error" ? "error" : ""}`;
+  clearTimeout(stampTimer);
+  if (kind !== "saving") {
+    stampTimer = setTimeout(() => el.classList.add("hidden"), 1800);
+  }
+}
+
+// ---------- Device link (token travels in URL fragment, never sent to any server) ----------
+function consumeDeviceLinkToken() {
+  const hash = location.hash;
+  if (hash && hash.startsWith("#pat=")) {
+    const pat = decodeURIComponent(hash.slice(5));
+    localStorage.setItem("list_gh_pat", pat);
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+}
+
+$("deviceLinkBtn").addEventListener("click", async () => {
+  const pat = localStorage.getItem("list_gh_pat");
+  if (!pat) return;
+  const url = `${location.origin}${location.pathname}#pat=${encodeURIComponent(pat)}`;
+  try {
+    await navigator.clipboard.writeText(url);
+    showStamp("saved", "Link copied");
+  } catch {
+    prompt("Copy this link and open it on your other device:", url);
+  }
+});
+
+// ---------- Boot ----------
+consumeDeviceLinkToken();
+renderTabs();
+if (sessionStorage.getItem("list_logged_in") === "1") {
+  afterLogin();
+} else {
+  showScreen("loginScreen");
+}
+</script>
+</body>
+</html>
